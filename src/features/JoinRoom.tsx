@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Bell, Settings, Shield, Zap } from 'lucide-react';
+import { ArrowRight, Shield, Zap } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PARTICIPANTS } from '@/constants/data';
 import { useNavigate } from '@tanstack/react-router';
+import { Header } from '@/components/Header';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
@@ -52,7 +53,7 @@ export default function JoinRoom() {
     setTimeout(
       () =>
         navigate({
-          to: '/',
+          to: '/room/ALPHA-V42',
         }),
       600
     );
@@ -67,30 +68,7 @@ export default function JoinRoom() {
   return (
     <div className="min-h-screen w-full bg-background flex flex-col">
       {/* ── Top bar ── */}
-      <header className="h-16 shrink-0 flex items-center justify-between px-8 border-b border-border/60">
-        <span className="text-[15px] font-black text-primary tracking-tight">
-          The Fluid Collaborative
-        </span>
-        <div className="flex items-center gap-3">
-          <button className="w-9 h-9 rounded-full flex items-center justify-center text-muted-foreground hover:bg-accent transition-colors">
-            <Bell size={18} />
-          </button>
-          <button className="w-9 h-9 rounded-full flex items-center justify-center text-muted-foreground hover:bg-accent transition-colors">
-            <Settings size={18} />
-          </button>
-          <div className="w-9 h-9 rounded-full bg-foreground text-background flex items-center justify-center text-xs font-bold overflow-hidden">
-            {PARTICIPANTS[5].img ? (
-              <img
-                src={PARTICIPANTS[5].img}
-                className="w-full h-full object-cover"
-                alt=""
-              />
-            ) : (
-              PARTICIPANTS[5].initials
-            )}
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* ── Main ── */}
       <main className="flex-1 flex items-center justify-center p-6">
@@ -314,21 +292,6 @@ export default function JoinRoom() {
           </div>
         </motion.div>
       </main>
-
-      {/* ── Footer ── */}
-      <footer className="h-14 flex items-center justify-center gap-6 text-[11px] font-semibold text-muted-foreground/40 tracking-wider uppercase">
-        <a href="#" className="hover:text-muted-foreground transition-colors">
-          Privacy Policy
-        </a>
-        <span>·</span>
-        <a href="#" className="hover:text-muted-foreground transition-colors">
-          Terms of Service
-        </a>
-        <span>·</span>
-        <a href="#" className="hover:text-muted-foreground transition-colors">
-          Documentation
-        </a>
-      </footer>
     </div>
   );
 }

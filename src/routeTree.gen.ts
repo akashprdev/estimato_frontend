@@ -8,133 +8,87 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root';
-import { Route as JoinRouteImport } from './routes/join';
-import { Route as ProtectedRouteImport } from './routes/_protected';
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated';
-import { Route as SplatRouteImport } from './routes/$';
-import { Route as IndexRouteImport } from './routes/index';
-import { Route as ProtectedSettingsRouteImport } from './routes/_protected/settings';
-import { Route as ProtectedMyFeedsRouteImport } from './routes/_protected/my-feeds';
-import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard';
-import { Route as AuthenticatedLoginRouteImport } from './routes/_authenticated/login';
-import { Route as ProtectedProfileIndexRouteImport } from './routes/_protected/profile/index';
-import { Route as ProtectedProfileEditProfileRouteImport } from './routes/_protected/profile/edit-profile';
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as JoinRouteImport } from './routes/join'
+import { Route as ProtectedRouteImport } from './routes/_protected'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as SplatRouteImport } from './routes/$'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as RoomRoomIdRouteImport } from './routes/room/$roomId'
+import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard'
+import { Route as AuthenticatedLoginRouteImport } from './routes/_authenticated/login'
 
 const JoinRoute = JoinRouteImport.update({
   id: '/join',
   path: '/join',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ProtectedRoute = ProtectedRouteImport.update({
   id: '/_protected',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const SplatRoute = SplatRouteImport.update({
   id: '/$',
   path: '/$',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any);
-const ProtectedSettingsRoute = ProtectedSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => ProtectedRoute,
-} as any);
-const ProtectedMyFeedsRoute = ProtectedMyFeedsRouteImport.update({
-  id: '/my-feeds',
-  path: '/my-feeds',
-  getParentRoute: () => ProtectedRoute,
-} as any);
+} as any)
+const RoomRoomIdRoute = RoomRoomIdRouteImport.update({
+  id: '/room/$roomId',
+  path: '/room/$roomId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProtectedDashboardRoute = ProtectedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => ProtectedRoute,
-} as any);
+} as any)
 const AuthenticatedLoginRoute = AuthenticatedLoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => AuthenticatedRoute,
-} as any);
-const ProtectedProfileIndexRoute = ProtectedProfileIndexRouteImport.update({
-  id: '/profile/',
-  path: '/profile/',
-  getParentRoute: () => ProtectedRoute,
-} as any);
-const ProtectedProfileEditProfileRoute =
-  ProtectedProfileEditProfileRouteImport.update({
-    id: '/profile/edit-profile',
-    path: '/profile/edit-profile',
-    getParentRoute: () => ProtectedRoute,
-  } as any);
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute;
-  '/$': typeof SplatRoute;
-  '/join': typeof JoinRoute;
-  '/login': typeof AuthenticatedLoginRoute;
-  '/dashboard': typeof ProtectedDashboardRoute;
-  '/my-feeds': typeof ProtectedMyFeedsRoute;
-  '/settings': typeof ProtectedSettingsRoute;
-  '/profile/edit-profile': typeof ProtectedProfileEditProfileRoute;
-  '/profile/': typeof ProtectedProfileIndexRoute;
+  '/': typeof IndexRoute
+  '/$': typeof SplatRoute
+  '/join': typeof JoinRoute
+  '/login': typeof AuthenticatedLoginRoute
+  '/dashboard': typeof ProtectedDashboardRoute
+  '/room/$roomId': typeof RoomRoomIdRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute;
-  '/$': typeof SplatRoute;
-  '/join': typeof JoinRoute;
-  '/login': typeof AuthenticatedLoginRoute;
-  '/dashboard': typeof ProtectedDashboardRoute;
-  '/my-feeds': typeof ProtectedMyFeedsRoute;
-  '/settings': typeof ProtectedSettingsRoute;
-  '/profile/edit-profile': typeof ProtectedProfileEditProfileRoute;
-  '/profile': typeof ProtectedProfileIndexRoute;
+  '/': typeof IndexRoute
+  '/$': typeof SplatRoute
+  '/join': typeof JoinRoute
+  '/login': typeof AuthenticatedLoginRoute
+  '/dashboard': typeof ProtectedDashboardRoute
+  '/room/$roomId': typeof RoomRoomIdRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  '/': typeof IndexRoute;
-  '/$': typeof SplatRoute;
-  '/_authenticated': typeof AuthenticatedRouteWithChildren;
-  '/_protected': typeof ProtectedRouteWithChildren;
-  '/join': typeof JoinRoute;
-  '/_authenticated/login': typeof AuthenticatedLoginRoute;
-  '/_protected/dashboard': typeof ProtectedDashboardRoute;
-  '/_protected/my-feeds': typeof ProtectedMyFeedsRoute;
-  '/_protected/settings': typeof ProtectedSettingsRoute;
-  '/_protected/profile/edit-profile': typeof ProtectedProfileEditProfileRoute;
-  '/_protected/profile/': typeof ProtectedProfileIndexRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/$': typeof SplatRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/_protected': typeof ProtectedRouteWithChildren
+  '/join': typeof JoinRoute
+  '/_authenticated/login': typeof AuthenticatedLoginRoute
+  '/_protected/dashboard': typeof ProtectedDashboardRoute
+  '/room/$roomId': typeof RoomRoomIdRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths:
-    | '/'
-    | '/$'
-    | '/join'
-    | '/login'
-    | '/dashboard'
-    | '/my-feeds'
-    | '/settings'
-    | '/profile/edit-profile'
-    | '/profile/';
-  fileRoutesByTo: FileRoutesByTo;
-  to:
-    | '/'
-    | '/$'
-    | '/join'
-    | '/login'
-    | '/dashboard'
-    | '/my-feeds'
-    | '/settings'
-    | '/profile/edit-profile'
-    | '/profile';
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/$' | '/join' | '/login' | '/dashboard' | '/room/$roomId'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/$' | '/join' | '/login' | '/dashboard' | '/room/$roomId'
   id:
     | '__root__'
     | '/'
@@ -144,133 +98,102 @@ export interface FileRouteTypes {
     | '/join'
     | '/_authenticated/login'
     | '/_protected/dashboard'
-    | '/_protected/my-feeds'
-    | '/_protected/settings'
-    | '/_protected/profile/edit-profile'
-    | '/_protected/profile/';
-  fileRoutesById: FileRoutesById;
+    | '/room/$roomId'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  SplatRoute: typeof SplatRoute;
-  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren;
-  ProtectedRoute: typeof ProtectedRouteWithChildren;
-  JoinRoute: typeof JoinRoute;
+  IndexRoute: typeof IndexRoute
+  SplatRoute: typeof SplatRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  ProtectedRoute: typeof ProtectedRouteWithChildren
+  JoinRoute: typeof JoinRoute
+  RoomRoomIdRoute: typeof RoomRoomIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/join': {
-      id: '/join';
-      path: '/join';
-      fullPath: '/join';
-      preLoaderRoute: typeof JoinRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_protected': {
-      id: '/_protected';
-      path: '';
-      fullPath: '/';
-      preLoaderRoute: typeof ProtectedRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/_protected'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ProtectedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated': {
-      id: '/_authenticated';
-      path: '';
-      fullPath: '/';
-      preLoaderRoute: typeof AuthenticatedRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/$': {
-      id: '/$';
-      path: '/$';
-      fullPath: '/$';
-      preLoaderRoute: typeof SplatRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
-      id: '/';
-      path: '/';
-      fullPath: '/';
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    '/_protected/settings': {
-      id: '/_protected/settings';
-      path: '/settings';
-      fullPath: '/settings';
-      preLoaderRoute: typeof ProtectedSettingsRouteImport;
-      parentRoute: typeof ProtectedRoute;
-    };
-    '/_protected/my-feeds': {
-      id: '/_protected/my-feeds';
-      path: '/my-feeds';
-      fullPath: '/my-feeds';
-      preLoaderRoute: typeof ProtectedMyFeedsRouteImport;
-      parentRoute: typeof ProtectedRoute;
-    };
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/room/$roomId': {
+      id: '/room/$roomId'
+      path: '/room/$roomId'
+      fullPath: '/room/$roomId'
+      preLoaderRoute: typeof RoomRoomIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_protected/dashboard': {
-      id: '/_protected/dashboard';
-      path: '/dashboard';
-      fullPath: '/dashboard';
-      preLoaderRoute: typeof ProtectedDashboardRouteImport;
-      parentRoute: typeof ProtectedRoute;
-    };
+      id: '/_protected/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof ProtectedDashboardRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
     '/_authenticated/login': {
-      id: '/_authenticated/login';
-      path: '/login';
-      fullPath: '/login';
-      preLoaderRoute: typeof AuthenticatedLoginRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
-    '/_protected/profile/': {
-      id: '/_protected/profile/';
-      path: '/profile';
-      fullPath: '/profile/';
-      preLoaderRoute: typeof ProtectedProfileIndexRouteImport;
-      parentRoute: typeof ProtectedRoute;
-    };
-    '/_protected/profile/edit-profile': {
-      id: '/_protected/profile/edit-profile';
-      path: '/profile/edit-profile';
-      fullPath: '/profile/edit-profile';
-      preLoaderRoute: typeof ProtectedProfileEditProfileRouteImport;
-      parentRoute: typeof ProtectedRoute;
-    };
+      id: '/_authenticated/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AuthenticatedLoginRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedLoginRoute: typeof AuthenticatedLoginRoute;
+  AuthenticatedLoginRoute: typeof AuthenticatedLoginRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedLoginRoute: AuthenticatedLoginRoute,
-};
+}
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
-  AuthenticatedRouteChildren
-);
+  AuthenticatedRouteChildren,
+)
 
 interface ProtectedRouteChildren {
-  ProtectedDashboardRoute: typeof ProtectedDashboardRoute;
-  ProtectedMyFeedsRoute: typeof ProtectedMyFeedsRoute;
-  ProtectedSettingsRoute: typeof ProtectedSettingsRoute;
-  ProtectedProfileEditProfileRoute: typeof ProtectedProfileEditProfileRoute;
-  ProtectedProfileIndexRoute: typeof ProtectedProfileIndexRoute;
+  ProtectedDashboardRoute: typeof ProtectedDashboardRoute
 }
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
   ProtectedDashboardRoute: ProtectedDashboardRoute,
-  ProtectedMyFeedsRoute: ProtectedMyFeedsRoute,
-  ProtectedSettingsRoute: ProtectedSettingsRoute,
-  ProtectedProfileEditProfileRoute: ProtectedProfileEditProfileRoute,
-  ProtectedProfileIndexRoute: ProtectedProfileIndexRoute,
-};
+}
 
 const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
-  ProtectedRouteChildren
-);
+  ProtectedRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -278,16 +201,17 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   ProtectedRoute: ProtectedRouteWithChildren,
   JoinRoute: JoinRoute,
-};
+  RoomRoomIdRoute: RoomRoomIdRoute,
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
 
-import type { getRouter } from './router.tsx';
-import type { createStart } from '@tanstack/react-start';
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
 declare module '@tanstack/react-start' {
   interface Register {
-    ssr: true;
-    router: Awaited<ReturnType<typeof getRouter>>;
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
   }
 }
