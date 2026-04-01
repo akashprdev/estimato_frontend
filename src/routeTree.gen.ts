@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root';
+import { Route as JoinRouteImport } from './routes/join';
 import { Route as ProtectedRouteImport } from './routes/_protected';
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated';
 import { Route as SplatRouteImport } from './routes/$';
@@ -20,6 +21,11 @@ import { Route as AuthenticatedLoginRouteImport } from './routes/_authenticated/
 import { Route as ProtectedProfileIndexRouteImport } from './routes/_protected/profile/index';
 import { Route as ProtectedProfileEditProfileRouteImport } from './routes/_protected/profile/edit-profile';
 
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
+  getParentRoute: () => rootRouteImport,
+} as any);
 const ProtectedRoute = ProtectedRouteImport.update({
   id: '/_protected',
   getParentRoute: () => rootRouteImport,
@@ -73,6 +79,7 @@ const ProtectedProfileEditProfileRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
   '/$': typeof SplatRoute;
+  '/join': typeof JoinRoute;
   '/login': typeof AuthenticatedLoginRoute;
   '/dashboard': typeof ProtectedDashboardRoute;
   '/my-feeds': typeof ProtectedMyFeedsRoute;
@@ -83,6 +90,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute;
   '/$': typeof SplatRoute;
+  '/join': typeof JoinRoute;
   '/login': typeof AuthenticatedLoginRoute;
   '/dashboard': typeof ProtectedDashboardRoute;
   '/my-feeds': typeof ProtectedMyFeedsRoute;
@@ -96,6 +104,7 @@ export interface FileRoutesById {
   '/$': typeof SplatRoute;
   '/_authenticated': typeof AuthenticatedRouteWithChildren;
   '/_protected': typeof ProtectedRouteWithChildren;
+  '/join': typeof JoinRoute;
   '/_authenticated/login': typeof AuthenticatedLoginRoute;
   '/_protected/dashboard': typeof ProtectedDashboardRoute;
   '/_protected/my-feeds': typeof ProtectedMyFeedsRoute;
@@ -108,6 +117,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$'
+    | '/join'
     | '/login'
     | '/dashboard'
     | '/my-feeds'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$'
+    | '/join'
     | '/login'
     | '/dashboard'
     | '/my-feeds'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/_authenticated'
     | '/_protected'
+    | '/join'
     | '/_authenticated/login'
     | '/_protected/dashboard'
     | '/_protected/my-feeds'
@@ -143,10 +155,18 @@ export interface RootRouteChildren {
   SplatRoute: typeof SplatRoute;
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren;
   ProtectedRoute: typeof ProtectedRouteWithChildren;
+  JoinRoute: typeof JoinRoute;
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/join': {
+      id: '/join';
+      path: '/join';
+      fullPath: '/join';
+      preLoaderRoute: typeof JoinRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/_protected': {
       id: '/_protected';
       path: '';
@@ -257,6 +277,7 @@ const rootRouteChildren: RootRouteChildren = {
   SplatRoute: SplatRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   ProtectedRoute: ProtectedRouteWithChildren,
+  JoinRoute: JoinRoute,
 };
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

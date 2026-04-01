@@ -1,6 +1,6 @@
-import Home from '@/features/Home';
+import CreateRoom from '@/features/CreateRoom';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/')({
-  component: Home,
+  component: CreateRoom,
 });

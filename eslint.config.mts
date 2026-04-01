@@ -18,10 +18,6 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
-  },
-
-  tseslint.configs.recommended,
-  {
     rules: {
       'react/react-in-jsx-scope': 'off',
       'react/jsx-uses-react': 'off',
@@ -40,6 +36,8 @@ export default defineConfig([
       ],
     },
   },
+
+  tseslint.configs.recommended,
 
   configPrettier,
 ]);
