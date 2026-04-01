@@ -59,10 +59,6 @@ export function FlipCard({
               backfaceVisibility: 'hidden',
               transform: 'rotateY(180deg)',
             }}
-            whileHover={{
-              y: -5,
-              transition: { type: 'spring', stiffness: 360, damping: 24 },
-            }}
           >
             <span
               className={`text-[44px] font-black tracking-tighter ${outlier ? 'text-amber-warm' : 'text-primary'}`}
