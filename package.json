@@ -4,8 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev --port 3000",
-    "build": "vite build",
+    "build": "vite build --preset vercel",
     "preview": "vite preview",
+    "start": "vite preview",
     "test": "vitest run",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
