@@ -1,20 +1,25 @@
 import { motion } from 'framer-motion';
 import { Layers } from 'lucide-react';
 import { fadeUp } from './motion-variants';
-import type { Participant } from './data';
-import { PokerAvatar } from './ParticipantCard';
+import { Avater, type Participant } from './ParticipantCard';
 
 export function FlipCard({
   participant,
   flipped,
+  votes,
 }: {
   participant: Participant;
   flipped: boolean;
+  votes?: Record<string, number> | null;
 }) {
-  const { vote, outlier, name, initials, colorClass, isMe } = participant;
+  const { id, name } = participant;
+
+  const vote = votes?.[id] ?? '?';
+
+  const isMe = participant?.id.toString() === localStorage.getItem('playerId');
   return (
     <motion.div variants={fadeUp} className="flex flex-col items-center gap-3">
-      <div style={{ perspective: 900, height: 156 }} className="w-full">
+      <div style={{ perspective: 900, height: 156 }} className="w-32">
         <motion.div
           style={{
             transformStyle: 'preserve-3d',
@@ -54,32 +59,17 @@ export function FlipCard({
           {/* Front face */}
           <motion.div
             className={`absolute inset-0 rounded-xl bg-card flex items-center justify-center
-              ${outlier ? 'border-2 border-amber-warm' : 'border border-primary/10'}`}
+              'border border-primary/10'`}
             style={{
               backfaceVisibility: 'hidden',
               transform: 'rotateY(180deg)',
             }}
           >
             <span
-              className={`text-[44px] font-black tracking-tighter ${outlier ? 'text-amber-warm' : 'text-primary'}`}
+              className={`text-[44px] font-black tracking-tighter text-primary`}
             >
               {vote}
             </span>
-            {outlier && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{
-                  type: 'spring',
-                  stiffness: 380,
-                  damping: 18,
-                  delay: 0.45,
-                }}
-                className="absolute -top-2.5 -right-2.5 bg-amber-warm text-primary-foreground text-[8px] font-black px-2 py-0.5 rounded-full shadow"
-              >
-                OUTLIER
-              </motion.div>
-            )}
           </motion.div>
         </motion.div>
       </div>
@@ -91,7 +81,8 @@ export function FlipCard({
         transition={{ delay: 0.3, duration: 0.3, ease: 'easeOut' }}
         className="flex items-center gap-2 bg-card px-3 py-1.5 rounded-full border border-border shadow-sm"
       >
-        <PokerAvatar initials={initials} colorClass={colorClass} size="sm" />
+        <Avater name={participant.name?.slice(0, 2).toUpperCase()} />
+
         <span className="text-[11px] font-bold text-foreground leading-none">
           {name.split(' ')[0]}
         </span>

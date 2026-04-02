@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { Layers, Settings } from 'lucide-react';
 
@@ -5,14 +6,15 @@ function NavItem({
   icon: Icon,
   label,
   active = false,
+  link: link,
 }: {
   icon: React.ElementType;
   label: string;
   active?: boolean;
+  link?: string;
 }) {
   return (
-    <motion.a
-      href="#"
+    <motion.div
       whileHover={{ x: 3 }}
       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
       className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors cursor-pointer
@@ -22,19 +24,21 @@ function NavItem({
             : 'text-muted-foreground hover:bg-muted hover:text-foreground'
         }`}
     >
-      <Icon
-        size={16}
-        className={active ? 'text-primary' : 'text-muted-foreground'}
-      />
-      {label}
-    </motion.a>
+      <Link to={link} replace={true} className="flex items-center gap-2">
+        <Icon
+          size={16}
+          className={active ? 'text-primary' : 'text-muted-foreground'}
+        />
+        {label}
+      </Link>
+    </motion.div>
   );
 }
 
 export function PokerSidebar() {
   const nav = [
     { icon: Layers, label: 'Poker Table', active: true },
-    { icon: Settings, label: 'Create New Room', active: false },
+    { icon: Settings, label: 'Create New Room', active: false, link: '/' },
   ];
   return (
     <aside className="w-52 h-full flex flex-col py-5 px-3 bg-background border-r border-border flex-shrink-0">

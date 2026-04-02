@@ -163,7 +163,7 @@ export default function CreateRoom() {
                     onChange={(e) =>
                       setSessionCode(e.target.value.toUpperCase())
                     }
-                    placeholder="Sprint Planning #42"
+                    placeholder="Enter Name"
                     className="h-14 rounded-2xl bg-muted/40 border-0 text-base font-semibold text-foreground tracking-wider placeholder:text-muted-foreground/35 placeholder:tracking-normal placeholder:font-medium focus-visible:ring-1 focus-visible:ring-primary/40 focus-visible:bg-background transition-all"
                   />
                 </motion.div>

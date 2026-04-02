@@ -9,6 +9,9 @@ import { TrayCard } from './TrayCard';
 import { CenterCard } from './CenterCard';
 
 import { CARD_VALUES, type CardValue } from './data';
+import type { RoomType } from '@/features/Room';
+import { socket } from '@/utilities/socket';
+import { getPlayerId } from '@/utilities/helper';
 
 function splitParticipants(participants: Participant[]) {
   const mid = Math.ceil(participants.length / 2);
@@ -21,23 +24,46 @@ function splitParticipants(participants: Participant[]) {
 
 export function VotingScreen({
   onReveal,
-  participants = [],
+  room,
 }: {
   onReveal: () => void;
-  participants: Participant[];
+  room: RoomType;
 }) {
   const [selected, setSelected] = useState<CardValue>(0);
   const [exiting, setExiting] = useState(false);
 
   const handleReveal = () => {
     setExiting(true);
+    if (!socket.connected) {
+      socket.connect();
+      socket.once('connect', () =>
+        socket.emit('reveal_votes', { roomId: room.id })
+      );
+    } else {
+      socket.emit('reveal_votes', { roomId: room.id });
+    }
+
     setTimeout(onReveal, 320);
   };
 
+  console.log(room);
+
   const { left, right } = useMemo(
-    () => splitParticipants(participants),
-    [participants]
+    () => splitParticipants(room.players),
+    [room.players]
   );
+
+  const handleSelect = (value: CardValue) => {
+    if (selected === value) return;
+
+    setSelected(value);
+
+    socket.emit('vote', {
+      roomId: room.id,
+      playerId: getPlayerId(),
+      vote: value,
+    });
+  };
 
   return (
     <motion.div
@@ -128,7 +154,7 @@ export function VotingScreen({
               key={v}
               value={v}
               selected={selected}
-              onClick={() => setSelected(v)}
+              onClick={() => handleSelect(v)}
             />
           ))}
 
@@ -141,7 +167,7 @@ export function VotingScreen({
               color: 'hsl(263 70% 50%)',
             }}
             whileTap={{ scale: 0.96 }}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-bold text-muted-foreground transition-colors self-center"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-bold text-primary transition-colors self-center"
           >
             <Eye size={16} />
             Show Results

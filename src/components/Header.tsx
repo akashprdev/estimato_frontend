@@ -1,7 +1,17 @@
+import { useState } from 'react';
 import { PARTICIPANTS } from './data';
 import { motion } from 'motion/react';
+import { Check, UserPlus } from 'lucide-react';
 
 export const Header = ({ showInviteButton = false }) => {
+  const [copy, setCopy] = useState(false);
+  const handleInvite = () => {
+    // copy path to clipboard
+    navigator.clipboard.writeText(window.location.href);
+    setCopy(true);
+    setTimeout(() => setCopy(false), 2000);
+  };
+
   return (
     <header
       className="h-16 flex-shrink-0 flex items-center justify-between px-7
@@ -43,12 +53,26 @@ export const Header = ({ showInviteButton = false }) => {
               +2
             </div>
           </div>
+
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             className="gradient-primary hover:opacity-90 text-primary-foreground px-5 py-2 rounded-lg text-sm font-bold transition-opacity"
+            onClick={handleInvite}
           >
-            Invite
+            <span className="flex gap-2 items-center">
+              {copy ? (
+                <>
+                  <Check size={14} />
+                  Copied
+                </>
+              ) : (
+                <>
+                  <UserPlus size={14} />
+                  Invite
+                </>
+              )}
+            </span>
           </motion.button>
         </div>
       )}

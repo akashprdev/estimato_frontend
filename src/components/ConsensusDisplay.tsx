@@ -1,9 +1,14 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { BadgeCheck } from 'lucide-react';
 import { Pill } from './primitives';
-import { popSpring, badgeSpring } from './motion-variants';
 
-export function ConsensusDisplay({ visible }: { visible: boolean }) {
+export function ConsensusDisplay({
+  visible,
+  finalEstimate = 0,
+}: {
+  visible: boolean;
+  finalEstimate: number;
+}) {
   return (
     <div className="flex flex-col items-center relative mb-8">
       <AnimatePresence>
@@ -19,33 +24,39 @@ export function ConsensusDisplay({ visible }: { visible: boolean }) {
         )}
       </AnimatePresence>
       <motion.div
-        variants={badgeSpring}
+        variants={{
+          hidden: { opacity: 0, y: 18 },
+          show: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] as const },
+          },
+        }}
         initial="hidden"
         animate={visible ? 'show' : 'hidden'}
       >
         <Pill className="bg-amber-warm/10 text-amber-warm-foreground border border-amber-warm/30 mb-3 z-10 relative">
           <BadgeCheck size={11} />
-          Consensus Reached
+          Final Estimate
         </Pill>
       </motion.div>
       <motion.div
-        variants={popSpring}
+        variants={{
+          hidden: { opacity: 0, y: 18 },
+          show: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] as const },
+          },
+        }}
         initial="hidden"
         animate={visible ? 'show' : 'hidden'}
         className="z-10 relative"
       >
         <span className="text-[120px] font-black text-primary leading-none tracking-tighter select-none drop-shadow-sm">
-          5
+          {finalEstimate}
         </span>
       </motion.div>
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: visible ? 1 : 0 }}
-        transition={{ delay: 0.55, duration: 0.4 }}
-        className="text-[10px] font-extrabold text-muted-foreground tracking-[0.22em] uppercase mt-1 z-10"
-      >
-        Final Estimate
-      </motion.p>
     </div>
   );
 }

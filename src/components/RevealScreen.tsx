@@ -1,26 +1,52 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Eye, RotateCcw, ArrowRight } from 'lucide-react';
+import { Eye, ArrowRight } from 'lucide-react';
 import { fadeUp, stagger, pageVariants } from './motion-variants';
 import { FlipCard } from './FlipCard';
 import { ConsensusDisplay } from './ConsensusDisplay';
 import { ConfettiBurst } from './ConfettiBurst';
-import { PARTICIPANTS } from './data';
+import type { RoomType } from '@/features/Room';
 
-export function RevealScreen({ onReVote }: { onReVote: () => void }) {
+export function RevealScreen({
+  onReVote,
+  room,
+}: {
+  onReVote: () => void;
+  room: RoomType;
+}) {
   const [flippedCount, setFlippedCount] = useState(0);
   const [showConsensus, setShowConsensus] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
-    PARTICIPANTS.forEach((_, i) => {
+    room.players.forEach((_, i) => {
       setTimeout(() => setFlippedCount(i + 1), 320 + i * 210);
     });
-    const done = 320 + PARTICIPANTS.length * 210;
+    const done = 320 + room.players.length * 210;
     setTimeout(() => setShowConsensus(true), done + 140);
     setTimeout(() => setShowConfetti(true), done + 360);
     setTimeout(() => setShowConfetti(false), done + 2200);
   }, []);
+
+  const numericVotes = Object.values(room.votes || {}).filter(
+    (v) => typeof v === 'number'
+  ) as number[];
+
+  const voteCounts: Record<number, number> = {};
+
+  numericVotes.forEach((v) => {
+    voteCounts[v] = (voteCounts[v] || 0) + 1;
+  });
+
+  let majorityVote: number | null = null;
+  let maxCount = 0;
+
+  Object.entries(voteCounts).forEach(([vote, count]) => {
+    if (count > maxCount) {
+      majorityVote = Number(vote);
+      maxCount = count;
+    }
+  });
 
   return (
     <motion.div
@@ -39,9 +65,6 @@ export function RevealScreen({ onReVote }: { onReVote: () => void }) {
             <span className="text-[10px] font-extrabold text-primary tracking-widest uppercase bg-secondary px-2.5 py-1 rounded-md">
               Current Story
             </span>
-            <h2 className="text-2xl font-black text-foreground mt-3 tracking-tight leading-snug">
-              ENG-402 Implement real-time cursor tracking
-            </h2>
           </motion.div>
           <motion.div variants={fadeUp} className="text-right">
             <p className="text-[10px] font-bold text-muted-foreground tracking-widest uppercase mb-1.5">
@@ -55,19 +78,29 @@ export function RevealScreen({ onReVote }: { onReVote: () => void }) {
 
         <div className="relative">
           <ConfettiBurst active={showConfetti} />
-          <ConsensusDisplay visible={showConsensus} />
+          <ConsensusDisplay
+            visible={showConsensus}
+            finalEstimate={majorityVote ?? 0}
+          />
         </div>
 
-        <motion.div
-          variants={stagger(0.1, 0.08)}
-          initial="hidden"
-          animate="show"
-          className="grid grid-cols-6 gap-4 max-w-4xl mx-auto"
-        >
-          {PARTICIPANTS.map((p, i) => (
-            <FlipCard key={p.id} participant={p} flipped={flippedCount > i} />
-          ))}
-        </motion.div>
+        <div className="flex justify-center">
+          <motion.div
+            variants={stagger(0.1, 0.08)}
+            initial="hidden"
+            animate="show"
+            className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto"
+          >
+            {room.players.map((p, i) => (
+              <FlipCard
+                key={p.id}
+                votes={room.votes}
+                participant={p}
+                flipped={flippedCount > i}
+              />
+            ))}
+          </motion.div>
+        </div>
       </div>
 
       {/* Footer */}
@@ -77,14 +110,6 @@ export function RevealScreen({ onReVote }: { onReVote: () => void }) {
         transition={{ delay: 0.2, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         className="absolute bottom-0 left-0 right-0 h-24 bg-card border-t border-border flex items-center justify-center gap-4"
       >
-        <motion.button
-          onClick={onReVote}
-          whileHover={{ backgroundColor: 'hsl(var(--muted))' }}
-          whileTap={{ scale: 0.97 }}
-          className="flex items-center gap-2 px-7 py-3 rounded-xl text-sm font-bold text-muted-foreground transition-colors"
-        >
-          <RotateCcw size={14} /> Re-vote
-        </motion.button>
         <motion.button
           onClick={onReVote}
           whileHover={{

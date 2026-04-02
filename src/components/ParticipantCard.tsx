@@ -1,7 +1,5 @@
 import { motion } from 'framer-motion';
-import { fadeUp } from './motion-variants';
-import type { CardValue } from './data';
-import { Circle } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export const CONFETTI_COLORS = [
@@ -15,63 +13,76 @@ export const CONFETTI_COLORS = [
 ];
 
 export interface Participant {
-  id: number;
+  id: string;
   name: string;
-  vote: CardValue | null;
+  vote: number | '?' | '☕' | null;
   hasVoted: boolean;
   isMe?: boolean;
 }
 
-export function ParticipantCard({ participant }: { participant: Participant }) {
-  const { name, hasVoted } = participant;
+// Optional confetti sparkles for voted users
+const ConfettiSpark = ({ color }: { color: string }) => (
+  <motion.div
+    initial={{ scale: 0 }}
+    animate={{ scale: [0, 1, 0], rotate: [0, 180, 360] }}
+    transition={{ duration: 0.8, repeat: 0 }}
+    className="absolute w-2 h-2 rounded-full"
+    style={{
+      backgroundColor: color,
+      top: Math.random() * 24,
+      left: Math.random() * 24,
+    }}
+  />
+);
 
-  const getRendomColorCard = () => {
-    const randomIndex = Math.floor(Math.random() * CONFETTI_COLORS.length);
-    return CONFETTI_COLORS[randomIndex];
-  };
+export function ParticipantCard({ participant }: { participant: Participant }) {
+  const { name, hasVoted, isMe } = participant;
 
   return (
     <motion.div
-      variants={fadeUp}
+      whileHover={{ y: -2, boxShadow: '0px 8px 20px rgba(0,0,0,0.08)' }}
       className={cn(
-        'flex items-center justify-between px-4 py-3.5 rounded-2xl',
+        'relative flex items-center justify-between p-3 rounded-2xl cursor-pointer transition-all',
         hasVoted
-          ? 'bg-green-500 shadow-2xl'
-          : 'bg-gray-100 border border-gray-300 shadow-sm'
+          ? 'bg-green-50 border border-green-200'
+          : 'bg-gray-50 border border-gray-200'
       )}
     >
-      <div className="flex items-center gap-2">
-        <PokerAvatar
-          colorClass={getRendomColorCard()}
-          initials={participant.name?.slice(0, 2).toUpperCase()}
-        />
-        <span className="text-sm font-bold text-foreground">{name}</span>
+      {/* LEFT: Avatar + Name */}
+      <div className="flex items-center gap-3">
+        <Avater name={name} />
+        <div className="flex flex-col">
+          <span
+            className={cn(
+              'font-medium text-sm',
+              isMe ? 'text-purple-600' : 'text-gray-800'
+            )}
+          >
+            {name} {isMe && '(You)'}
+          </span>
+        </div>
+      </div>
 
-        <Circle
-          size={8}
-          className="text-primary"
-          fill="currentColor"
-          strokeWidth={0}
-        />
+      {/* RIGHT: Status */}
+      <div className="relative flex items-center justify-center w-6 h-6">
+        {hasVoted ? (
+          <>
+            <CheckCircle className="text-green-500 w-6 h-6 animate-pulse" />
+            <ConfettiSpark color={CONFETTI_COLORS[0]} />
+          </>
+        ) : (
+          <div className="w-4 h-4 rounded-full border-2 border-gray-300" />
+        )}
       </div>
     </motion.div>
   );
 }
 
-interface AvatarProps {
-  initials: string;
-  colorClass?: string;
-  size?: 'sm' | 'md' | 'lg';
-}
-
-export function PokerAvatar({ initials }: AvatarProps) {
-  return (
-    <div
-      className={cn(
-        ' bg-muted text-muted-foreground size-12 rounded-full shrink-0 flex items-center justify-center font-bold overflow-hidden'
-      )}
-    >
-      {initials}
-    </div>
-  );
-}
+export const Avater = ({ name, color }: { name: string; color?: string }) => (
+  <div
+    className="flex items-center justify-center w-10 h-10 rounded-full font-bold text-gray-500 bg-gray-200"
+    style={{ backgroundColor: color }}
+  >
+    {name.slice(0, 2).toUpperCase()}
+  </div>
+);

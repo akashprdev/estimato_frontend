@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Shield, Zap } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { PARTICIPANTS } from '@/constants/data';
 import { useNavigate } from '@tanstack/react-router';
 import { Header } from '@/components/Header';
+import { socket } from '@/utilities/socket';
+import { getPlayerId, getPlayerName } from '@/utilities/helper';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
@@ -49,15 +51,39 @@ export default function JoinRoom() {
   const handleJoin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!sessionCode.trim()) return;
+
     setIsJoining(true);
-    setTimeout(
-      () =>
-        navigate({
-          to: '/room/ALPHA-V42',
-        }),
-      600
-    );
+
+    if (!socket.connected) {
+      socket.connect();
+    }
+
+    socket.emit('join_room', {
+      roomId: sessionCode.toLowerCase(),
+      playerId: getPlayerId(),
+      name: getPlayerName() ?? '',
+    });
   };
+
+  useEffect(() => {
+    // Listen for room updates globally
+    socket.on('room_update', (room) => {
+      console.log('room_update received', room);
+
+      navigate({ to: `/room/${room.id}` });
+    });
+
+    socket.on('connect_error', (err) => {
+      console.error('Connection error', err);
+      setIsJoining(false);
+    });
+
+    return () => {
+      // Cleanup listeners
+      socket.off('room_update');
+      socket.off('connect_error');
+    };
+  }, [navigate]);
 
   const handleCreate = () => {
     navigate({

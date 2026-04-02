@@ -19,11 +19,6 @@ export function CenterCard({ value }: { value: CardValue }) {
           {value}
         </motion.span>
       </AnimatePresence>
-      <div className="absolute bottom-7 bg-card px-6 py-2 rounded-full shadow-sm">
-        <span className="text-[9px] font-extrabold text-primary tracking-widest uppercase">
-          Confirmed
-        </span>
-      </div>
     </div>
   );
 }

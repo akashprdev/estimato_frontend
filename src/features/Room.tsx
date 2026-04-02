@@ -11,14 +11,17 @@ import { getPlayerId, getPlayerName, setPlayerName } from '@/utilities/helper';
 import { NameModal } from '@/components/NameModal';
 import type { Participant } from '@/components/ParticipantCard';
 
-interface Room {
+export interface RoomType {
   id: string;
   players: Participant[];
+  revealed: boolean;
+  finalStory: string | null;
+  votes: Record<string, number> | null;
 }
 
 export default function Room() {
   const { roomId } = useParams({ from: '/room/$roomId' });
-  const [room, setRoom] = useState<Room | null>(null);
+  const [room, setRoom] = useState<RoomType | null>(null);
   const [screen, setScreen] = useState<'vote' | 'reveal'>('vote');
   const [name, setName] = useState(getPlayerName());
 
@@ -55,6 +58,16 @@ export default function Room() {
     };
   }, [roomId, name]);
 
+  useEffect(() => {
+    if (!room) return;
+    setScreen(room.revealed ? 'reveal' : 'vote');
+  }, [room]);
+
+  const handleReVote = () => {
+    setScreen('vote');
+    socket.emit('reset', { roomId: room!.id });
+  };
+
   if (!name) {
     return (
       <NameModal
@@ -78,12 +91,12 @@ export default function Room() {
         <AnimatePresence mode="wait">
           {screen === 'vote' ? (
             <VotingScreen
-              participants={room.players}
+              room={room}
               key="vote"
               onReveal={() => setScreen('reveal')}
             />
           ) : (
-            <RevealScreen key="reveal" onReVote={() => setScreen('vote')} />
+            <RevealScreen room={room} key="reveal" onReVote={handleReVote} />
           )}
         </AnimatePresence>
       </div>
