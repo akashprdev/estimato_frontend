@@ -16,6 +16,7 @@ export function getRouter() {
       // auth will be passed down from App component
       auth: undefined!,
     },
+    basepath: '/',
   });
 
   return router;
