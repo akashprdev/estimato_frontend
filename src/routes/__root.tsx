@@ -18,7 +18,25 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Estimato',
+        title: 'Estimato – Online Planning Poker & Agile Estimation Tool',
+      },
+      {
+        name: 'description',
+        content:
+          'Estimato is a modern online Planning Poker app for Scrum and agile teams. Estimate story points, vote collaboratively, and reveal results in real time. Perfect for remote sprint planning.',
+      },
+      {
+        name: 'keywords',
+        content:
+          'planning poker, online estimation, agile estimation tool, scrum poker, story point estimation, remote sprint planning, collaborative voting, real-time results',
+      },
+      {
+        name: 'author',
+        content: 'Akash Pradhan',
+      },
+      {
+        name: 'author_website',
+        content: 'https://dev2akash.vercel.app/',
       },
     ],
     links: [
