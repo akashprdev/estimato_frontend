@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { Layers } from 'lucide-react';
 import { fadeUp } from './motion-variants';
-import { PokerAvatar } from './primitives';
 import type { Participant } from './data';
+import { PokerAvatar } from './ParticipantCard';
 
 export function FlipCard({
   participant,
@@ -11,7 +11,7 @@ export function FlipCard({
   participant: Participant;
   flipped: boolean;
 }) {
-  const { vote, outlier, name, initials, colorClass, img, isMe } = participant;
+  const { vote, outlier, name, initials, colorClass, isMe } = participant;
   return (
     <motion.div variants={fadeUp} className="flex flex-col items-center gap-3">
       <div style={{ perspective: 900, height: 156 }} className="w-full">
@@ -91,12 +91,7 @@ export function FlipCard({
         transition={{ delay: 0.3, duration: 0.3, ease: 'easeOut' }}
         className="flex items-center gap-2 bg-card px-3 py-1.5 rounded-full border border-border shadow-sm"
       >
-        <PokerAvatar
-          img={img}
-          initials={initials}
-          colorClass={colorClass}
-          size="sm"
-        />
+        <PokerAvatar initials={initials} colorClass={colorClass} size="sm" />
         <span className="text-[11px] font-bold text-foreground leading-none">
           {name.split(' ')[0]}
         </span>

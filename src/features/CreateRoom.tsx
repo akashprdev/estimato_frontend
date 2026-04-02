@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Shield, Zap } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { PARTICIPANTS } from '@/constants/data';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { Header } from '@/components/Header';
+import { socket } from '@/utilities/socket';
+import { getPlayerId } from '@/utilities/helper';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
@@ -45,19 +47,56 @@ export default function CreateRoom() {
   const [sessionCode, setSessionCode] = useState('');
   const [isJoining, setIsJoining] = useState(false);
   const navigate = useNavigate();
-
   const handleJoin = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!sessionCode.trim()) return;
+
     setIsJoining(true);
-    setTimeout(
-      () =>
-        navigate({
-          to: '/room/ALPHA-V42',
-        }),
-      600
-    );
+
+    if (socket.connected) {
+      createRoom();
+    } else {
+      socket.connect();
+    }
   };
+
+  const createRoom = () => {
+    console.log('emitting create_room');
+
+    socket.emit('create_room', {
+      name: 'Host',
+      playerId: getPlayerId(),
+    });
+  };
+
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('socket connected');
+
+      createRoom();
+    });
+
+    socket.on('room_update', (room) => {
+      console.log('room_update received', room);
+
+      navigate({
+        to: `/room/${room.id}`,
+      });
+    });
+
+    socket.on('connect_error', (err) => {
+      console.error('connection error', err);
+
+      setIsJoining(false);
+    });
+
+    return () => {
+      socket.off('connect');
+      socket.off('room_update');
+      socket.off('connect_error');
+    };
+  }, [sessionCode]);
 
   return (
     <div className="min-h-screen w-full bg-background flex flex-col">

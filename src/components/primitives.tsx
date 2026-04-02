@@ -1,36 +1,5 @@
 import { CheckCircle2, Clock } from 'lucide-react';
 
-interface AvatarProps {
-  img: string | null;
-  initials: string;
-  colorClass?: string;
-  size?: 'sm' | 'md' | 'lg';
-}
-
-export function PokerAvatar({
-  img,
-  initials,
-  colorClass = 'bg-muted text-muted-foreground',
-  size = 'md',
-}: AvatarProps) {
-  const sizeMap = {
-    sm: 'w-6 h-6 text-[9px]',
-    md: 'w-11 h-11 text-xs',
-    lg: 'w-12 h-12 text-sm',
-  };
-  return (
-    <div
-      className={`${sizeMap[size]} ${colorClass} rounded-full flex-shrink-0 flex items-center justify-center font-bold overflow-hidden`}
-    >
-      {img ? (
-        <img src={img} alt={initials} className="w-full h-full object-cover" />
-      ) : (
-        initials
-      )}
-    </div>
-  );
-}
-
 export function VoteStatus({ voted }: { voted: boolean }) {
   return voted ? (
     <CheckCircle2

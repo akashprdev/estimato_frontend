@@ -4,11 +4,11 @@ import { Eye } from 'lucide-react';
 
 import { fadeUp, stagger, pageVariants } from './motion-variants';
 import { Pill } from './primitives';
-import { ParticipantCard } from './ParticipantCard';
+import { ParticipantCard, type Participant } from './ParticipantCard';
 import { TrayCard } from './TrayCard';
 import { CenterCard } from './CenterCard';
 
-import { CARD_VALUES, type CardValue, type Participant } from './data';
+import { CARD_VALUES, type CardValue } from './data';
 
 function splitParticipants(participants: Participant[]) {
   const mid = Math.ceil(participants.length / 2);

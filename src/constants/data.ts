@@ -77,13 +77,3 @@ export const PARTICIPANTS: Participant[] = [
     img: null,
   },
 ];
-
-export const CONFETTI_COLORS = [
-  '#7c3aed',
-  '#a78bfa',
-  '#fbbf24',
-  '#fb923c',
-  '#c4b5fd',
-  '#34d399',
-  '#f472b6',
-];
