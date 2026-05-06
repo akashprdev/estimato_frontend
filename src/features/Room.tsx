@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
 
 import { VotingScreen } from '@/components/VotingScreen';
@@ -20,83 +20,121 @@ export interface RoomType {
 }
 
 export default function Room() {
-  const { roomId } = useParams({ from: '/room/$roomId' });
+  const params = useParams({ from: '/_protected/$id' });
+  const id = params?.id as string | undefined;
+
   const [room, setRoom] = useState<RoomType | null>(null);
   const [screen, setScreen] = useState<'vote' | 'reveal'>('vote');
-  const [name, setName] = useState(getPlayerName());
+  const [name, setName] = useState<string | null>(getPlayerName());
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!name) {
+  // 🔹 Join room function
+  const joinRoom = useCallback(() => {
+    if (!id || !name) {
+      console.warn('Missing id or name, cannot join');
       return;
     }
 
-    const joinRoom = () => {
-      socket.emit('join_room', {
-        roomId,
-        playerId: getPlayerId(),
-        name: getPlayerName() ?? 'Anonymous',
-      });
+    const payload = {
+      roomId: id,
+      playerId: getPlayerId(),
+      name,
     };
 
-    if (socket.connected) {
-      joinRoom();
-    } else {
-      socket.connect();
+    socket.emit('join_room', payload);
+  }, [id, name]);
 
-      socket.once('connect', joinRoom);
+  // 🔹 Socket lifecycle
+  useEffect(() => {
+    if (!id || !name) return;
+
+    const handleConnect = () => {
+      joinRoom();
+    };
+
+    const handleRoomUpdate = (updatedRoom: RoomType) => {
+      setRoom(updatedRoom);
+      setLoading(false);
+    };
+
+    const handleError = (err: unknown) => {
+      console.error('❌ Socket error:', err);
+    };
+
+    if (!socket.connected) {
+      socket.connect();
+    } else {
+      joinRoom();
     }
 
-    socket.on('room_update', (updatedRoom) => {
-      console.log('room update', updatedRoom);
-
-      setRoom(updatedRoom);
-    });
+    socket.on('connect', handleConnect);
+    socket.on('room_update', handleRoomUpdate);
+    socket.on('connect_error', handleError);
 
     return () => {
-      socket.off('room_update');
-      socket.off('connect', joinRoom);
+      socket.off('connect', handleConnect);
+      socket.off('room_update', handleRoomUpdate);
+      socket.off('connect_error', handleError);
     };
-  }, [roomId, name]);
+  }, [id, name, joinRoom]);
 
+  // 🔹 Screen sync
   useEffect(() => {
     if (!room) return;
     setScreen(room.revealed ? 'reveal' : 'vote');
   }, [room]);
 
   const handleReVote = () => {
+    if (!room) return;
+
+    socket.emit('reset', { roomId: room.id });
     setScreen('vote');
-    socket.emit('reset', { roomId: room!.id });
   };
 
   if (!name) {
     return (
       <NameModal
-        open={!name}
+        open
         onSubmit={(value) => {
           setName(value);
-
           setPlayerName(value);
         }}
       />
     );
   }
 
-  if (!room) return null;
+  if (!id) {
+    return <p> Invalid room ID</p>;
+  }
+
+  if (loading) {
+    return (
+      <div style={{ padding: 20 }}>
+        <p>⏳ Loading room...</p>
+      </div>
+    );
+  }
+
+  if (!room) {
+    return <p>⚠️ Failed to load room (no data received)</p>;
+  }
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background">
       <PokerSidebar />
+
       <div className="flex flex-col flex-1 overflow-hidden">
         <Header showInviteButton />
+
         <AnimatePresence mode="wait">
           {screen === 'vote' ? (
             <VotingScreen
-              room={room}
               key="vote"
+              room={room}
               onReveal={() => setScreen('reveal')}
             />
           ) : (
-            <RevealScreen room={room} key="reveal" onReVote={handleReVote} />
+            <RevealScreen key="reveal" room={room} onReVote={handleReVote} />
           )}
         </AnimatePresence>
       </div>

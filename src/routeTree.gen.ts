@@ -14,8 +14,8 @@ import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as RoomRoomIdRouteImport } from './routes/room/$roomId'
 import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard'
+import { Route as ProtectedIdRouteImport } from './routes/_protected/$id'
 import { Route as AuthenticatedLoginRouteImport } from './routes/_authenticated/login'
 
 const JoinRoute = JoinRouteImport.update({
@@ -41,14 +41,14 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RoomRoomIdRoute = RoomRoomIdRouteImport.update({
-  id: '/room/$roomId',
-  path: '/room/$roomId',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProtectedDashboardRoute = ProtectedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+const ProtectedIdRoute = ProtectedIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
   getParentRoute: () => ProtectedRoute,
 } as any)
 const AuthenticatedLoginRoute = AuthenticatedLoginRouteImport.update({
@@ -62,16 +62,16 @@ export interface FileRoutesByFullPath {
   '/$': typeof SplatRoute
   '/join': typeof JoinRoute
   '/login': typeof AuthenticatedLoginRoute
+  '/$id': typeof ProtectedIdRoute
   '/dashboard': typeof ProtectedDashboardRoute
-  '/room/$roomId': typeof RoomRoomIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/join': typeof JoinRoute
   '/login': typeof AuthenticatedLoginRoute
+  '/$id': typeof ProtectedIdRoute
   '/dashboard': typeof ProtectedDashboardRoute
-  '/room/$roomId': typeof RoomRoomIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -81,14 +81,14 @@ export interface FileRoutesById {
   '/_protected': typeof ProtectedRouteWithChildren
   '/join': typeof JoinRoute
   '/_authenticated/login': typeof AuthenticatedLoginRoute
+  '/_protected/$id': typeof ProtectedIdRoute
   '/_protected/dashboard': typeof ProtectedDashboardRoute
-  '/room/$roomId': typeof RoomRoomIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$' | '/join' | '/login' | '/dashboard' | '/room/$roomId'
+  fullPaths: '/' | '/$' | '/join' | '/login' | '/$id' | '/dashboard'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$' | '/join' | '/login' | '/dashboard' | '/room/$roomId'
+  to: '/' | '/$' | '/join' | '/login' | '/$id' | '/dashboard'
   id:
     | '__root__'
     | '/'
@@ -97,8 +97,8 @@ export interface FileRouteTypes {
     | '/_protected'
     | '/join'
     | '/_authenticated/login'
+    | '/_protected/$id'
     | '/_protected/dashboard'
-    | '/room/$roomId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -107,7 +107,6 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   ProtectedRoute: typeof ProtectedRouteWithChildren
   JoinRoute: typeof JoinRoute
-  RoomRoomIdRoute: typeof RoomRoomIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -147,18 +146,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/room/$roomId': {
-      id: '/room/$roomId'
-      path: '/room/$roomId'
-      fullPath: '/room/$roomId'
-      preLoaderRoute: typeof RoomRoomIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_protected/dashboard': {
       id: '/_protected/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof ProtectedDashboardRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
+    '/_protected/$id': {
+      id: '/_protected/$id'
+      path: '/$id'
+      fullPath: '/$id'
+      preLoaderRoute: typeof ProtectedIdRouteImport
       parentRoute: typeof ProtectedRoute
     }
     '/_authenticated/login': {
@@ -184,10 +183,12 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 )
 
 interface ProtectedRouteChildren {
+  ProtectedIdRoute: typeof ProtectedIdRoute
   ProtectedDashboardRoute: typeof ProtectedDashboardRoute
 }
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
+  ProtectedIdRoute: ProtectedIdRoute,
   ProtectedDashboardRoute: ProtectedDashboardRoute,
 }
 
@@ -201,7 +202,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   ProtectedRoute: ProtectedRouteWithChildren,
   JoinRoute: JoinRoute,
-  RoomRoomIdRoute: RoomRoomIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

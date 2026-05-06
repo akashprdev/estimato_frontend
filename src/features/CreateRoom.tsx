@@ -81,7 +81,7 @@ export default function CreateRoom() {
       console.log('room_update received', room);
 
       navigate({
-        to: `/room/${room.id}`,
+        to: `/${room.id}`,
       });
     });
 

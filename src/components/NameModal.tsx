@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, type Dispatch, type SetStateAction } from 'react';
 import { motion } from 'framer-motion';
 
 import {
@@ -16,15 +16,17 @@ import { User, Sparkles } from 'lucide-react';
 
 export const NameModal = ({
   open,
+  setOpen,
   onSubmit,
 }: {
   open: boolean;
   onSubmit: (name: string) => void;
+  setOpen?: Dispatch<SetStateAction<boolean>>;
 }) => {
   const [value, setValue] = useState('');
 
   return (
-    <Dialog open={open}>
+    <Dialog defaultOpen={open} open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[420px] rounded-3xl p-0 overflow-hidden">
         <div className="p-8">
           <DialogHeader className="space-y-3">
@@ -38,7 +40,7 @@ export const NameModal = ({
             </motion.div>
 
             <DialogTitle className="text-2xl font-black tracking-tight">
-              Your display name
+              Enter your name
             </DialogTitle>
 
             <DialogDescription className="text-muted-foreground">
@@ -47,22 +49,14 @@ export const NameModal = ({
           </DialogHeader>
 
           <div className="mt-6 space-y-3">
-            <label className="text-[10px] font-extrabold text-muted-foreground tracking-[0.14em] uppercase">
-              Name
-            </label>
-
             <Input
               autoFocus
               value={value}
               maxLength={24}
-              placeholder="Jane Doe"
+              placeholder="Your name (e.g. Akash)"
               onChange={(e) => setValue(e.target.value)}
-              className="h-12 rounded-xl bg-muted/40 border-0 font-semibold tracking-wide focus-visible:ring-1 focus-visible:ring-primary/40"
+              className="h-12 rounded-xl bg-muted/40 border-0 tracking-wide focus-visible:ring-1 focus-visible:ring-primary/40"
             />
-
-            <p className="text-[11px] text-muted-foreground/60">
-              Tip: use your real name for easier collaboration
-            </p>
           </div>
 
           <Button
